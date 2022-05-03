@@ -1,0 +1,119 @@
+﻿<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Welcome Redis Stress Test</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"><a href="#" onclick="createData();" class="btn btn-success" style="width:100%">Upload 100k Data</a></div>
+        <div class="col-md-3"><a asp-action="GetData" class="btn btn-primary" style="width:100%">Get All Data</a></div>
+        <div class="col-md-3"><a asp-action="RemoveData" class="btn btn-danger" style="width:100%">Remove All Data</a></div>
+        <div class="col-md-3"><a href="#" onclick="AddUserData();" class="btn btn-info" style="width:100%">Add User</a></div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="restival" class="m-3">@ViewBag.Message</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="data" class="m-3">
+    @if (ViewBag.UserData != null)
+    {
+        <table class="table  table-striped table-hover">
+            <tr>
+                <th>Name</th>
+                <th>SurName</th>
+                <th>Suffix</th>
+
+            </tr>
+            @foreach (User user in ViewBag.UserData)
+            {
+                <tr>
+                    <td>@user.Name</td>
+
+                    <td>@user.SurName</td>
+                    <td>@user.Suffix</td>
+                </tr>
+            }
+        </table>
+    }
+</div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+
+        function getLastValue(){
+
+                $.ajax({
+                    url:'@Url.Action("GetLastValue", "Home")',
+                    type:'GET',
+                    async:true,
+                    success:function(e){
+                        console.log(e);
+                        $('#restival').html(
+                        "<div id='pb' class='progress'><div class='progress-bar' role='progressbar' style='width:"+e+"%;' aria-valuenow='"+e+"' aria-valuemin='0' aria-valuemax='100'></div></div>"
+                        );
+
+                    }
+
+                });
+         }
+
+        function createData(){
+                var intervalID = setInterval(getLastValue, 250);
+                $.ajax(
+                {
+                    url:'@Url.Action("CreateData", "Home")',
+                    processData:false,
+                    contentType:false,
+                    type:"POST",
+                    async: true,
+                    success:function(e){
+                        $('#restival').html(e);
+                        clearInterval(intervalID);
+                    }
+                });
+
+             }
+
+
+            function AddUserData(){
+                
+                $.ajax(
+                {
+                    url:'@Url.Action("AddUserData", "Home")',
+                    processData:false,
+                    contentType:false,
+                    type:"POST",
+                    async: true,
+                    success:function(e){
+                        $('#restival').html(e);
+                    }
+                });
+
+    }
+
+
+
+</script>
